@@ -1,0 +1,8 @@
+{
+  "name": "DARTA",
+  "description": "An AI-powered data assistant for SMEs in the Global South, bridging informal chat with business intelligence.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
