@@ -11,7 +11,7 @@ import {
   Bar,
   Cell
 } from 'recharts';
-import { TrendingUp, AlertTriangle, DollarSign, Package, Users, BarChart2 } from 'lucide-react';
+import { TrendingUp, AlertTriangle, DollarSign, Package, Users, BarChart2, Download } from 'lucide-react';
 import { MOCK_DASHBOARD_DATA } from '../constants';
 
 const Dashboard: React.FC = () => {
@@ -25,11 +25,48 @@ const Dashboard: React.FC = () => {
     }).format(val);
   };
 
+  const handleExportCSV = () => {
+    // We will export the Sales Trend data as it represents the core financial timeline
+    const headers = ['Day', 'Sales (UGX)', 'Expenses (UGX)', 'Net (UGX)'];
+    
+    const rows = data.salesTrend.map(day => [
+      day.name,
+      day.sales,
+      day.expenses,
+      day.sales - day.expenses
+    ]);
+
+    // Create CSV content
+    const csvContent = [
+      headers.join(','),
+      ...rows.map(row => row.join(','))
+    ].join('\n');
+
+    // Create a Blob and download link
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `darta_weekly_report_${new Date().toISOString().slice(0, 10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div className="p-4 pb-24 space-y-6 bg-gray-50 min-h-screen">
-      <header>
-        <h1 className="text-2xl font-bold text-gray-800">My Business</h1>
-        <p className="text-gray-500 text-sm">Today's Overview</p>
+      <header className="flex justify-between items-start">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-800">My Business</h1>
+          <p className="text-gray-500 text-sm">Today's Overview</p>
+        </div>
+        <button 
+            onClick={handleExportCSV}
+            className="flex items-center space-x-1 bg-white border border-gray-200 text-green-700 px-3 py-2 rounded-lg text-xs font-medium shadow-sm hover:bg-green-50 active:scale-95 transition-transform"
+        >
+            <Download size={16} />
+            <span>Export CSV</span>
+        </button>
       </header>
 
       {/* KPI Cards */}
